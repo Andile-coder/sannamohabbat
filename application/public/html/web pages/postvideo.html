@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Video</title>
+</head>
+<body>
+    <header> 
+        <h1> Post Video</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="registration.html">Registration</a></li>
+                <li><a href="postvideo.html">Post Video</a></li>
+                <li><a href="viewpost.html">View Post</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form action="upload.php" method="POST" enctype="multipart/form-data">
+            <label for="post-title"> Post Title:</label><br>
+            <input type="text" id="post-title" name="post-title" required><br>
+
+            <label for="post-description">Post Description</label><br>
+            <textarea id="post-description" name="post_description" rows="5" cols="30" required></textarea><br>
+
+            <label for="video-file">Select a video file:</label><br>
+            <input type="file" id="video-file" name="video-file" accept=" "video/*" required><br>
+
+            <label
+        </form>
+
+    </main>
+</body>
+</html>
