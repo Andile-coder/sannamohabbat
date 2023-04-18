@@ -46,6 +46,26 @@ main {
   padding: 40px;
 }
 
+/* #apiStuff {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+} */
+
+img {
+  display: flex;
+  flex-direction: row;
+  flex: 50%;
+  justify-content: space-between;
+  opacity: 1;
+  transition: opacity 0.3 ease-in-out;
+}
+
+img.fade {
+  opacity:0;
+}
+
 section {
   background-color: #f8f4e3;
   padding: 20px;
