@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+  <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="./login">Login</a></li>
+      <li><a href="./registration">Registration</a></li>
+      <li><a href="./postvideo">Post Video</a></li>
+      <li><a href="./viewpost">View Post</a></li>
+      <li><a href="./profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>User Profile</h1>
+
+    <div>
+      <h2>Username: </h2>
+      <p id="username">SannaMohabbat45</p>
+    </div>
+
+    <div>
+      <h2>Email:</h2>
+      <p id="useremail">firstlast@gmail.com</p>
+    </div>
+
+    <div>
+      <h2>Posts:</h2>
+      <ul>
+        <li><a href="viewpost.html">Post Title 1</a></li>
+        <li><a href="viewpost.html">Post Title 2</a></li>
+        <li><a href="viewpost.html">Post Title 3</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; Sanna Mohabbat</p>
+  </footer>
+
+  <script>
+    const start = async () => {
+      try {
+
+        const username = document.getElementById('username')
+        const useremail = document.getElementById('useremail')
+        const response = await fetch('currentuser/profile', {
+          method: 'GET',
+          headers: {
+            //    'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          username.innerText = data.user?.username
+          useremail.innerText = data.user?.email
+
+        } else {
+          console.log(response)
+          throw new Error('Request failed with status: ' + response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    };
+
+    start();
+  </script>
+</body>
+</html>

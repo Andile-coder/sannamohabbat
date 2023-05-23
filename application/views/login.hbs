@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+
+</head>
+
+<body>
+
+  <h1>My Website</h1>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="./login">Login</a></li>
+      <li><a href="./registration">Registration</a></li>
+      <li><a href="./postvideo">Post Video</a></li>
+      <li><a href="./viewpost">View Post</a></li>
+      <li><a href="./profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2>Login Form</h2>
+    <form action="#" id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required /><br /><br />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required /><br /><br />
+      <input type="submit" value="Login" />
+    </form>
+  </main>
+  <footer>
+    <p>&copy; Sanna Mohabbat</p>
+  </footer>
+  <script>
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value; const password
+        = document.getElementById('password').value; try {
+          const response = await
+            fetch('auth/login', {
+              method: 'POST', headers: {
+                'Content-Type':
+                  'application/json'
+              }, body: JSON.stringify({ username, password })
+            }); if
+            (response.ok) {
+              const data = await response.json();
+            localStorage.setItem("token", data.token); console.log('Loginsuccessful');
+          } else {
+            const errorData = await response.json();
+            console.error('Loginfailed:', errorData.error);
+          }
+        } catch (error) {
+          console.error('Error occurred while submitting:', error);
+        }
+    });
+
+  </script>
+</body>
+</html>

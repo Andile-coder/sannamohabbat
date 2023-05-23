@@ -1,2 +1,37 @@
-<h1>{{title}}</h1>
-<p>Hello {{ name }},Welcome to {{title}}</p>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
+
+    <meta charset="UTF-8" />
+    <title>My Website</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script defer src="api.js"></script>
+  </head>
+  <body>
+
+    <h1>Welcome to My Website!</h1>
+
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="./login">Login</a></li>
+        <li><a href="./registration">Registration</a></li>
+        <li><a href="./postvideo">Post Video</a></li>
+        <li><a href="./viewpost">View Post</a></li>
+        <li><a href="./profile">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2>Welcome to My Website!</h2>
+      <p id="weeee">This is the front page for my website. Here, you can find
+        all the tools that this application includes.</p>
+      <div id="apiStuff">
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; Sanna Mohabbat</p>
+    </footer>
+  </body>
+</html>

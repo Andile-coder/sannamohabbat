@@ -1,58 +1,73 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Registration</title>
-    <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
-    <link rel="stylesheet" type="text/css" href="reg-validation.css"/>
-    <script defer src="registration.js"></script>
-</head>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="reg-validation.css" />
+  </head>
 
-<body>
-
-<h1>Registration Page</h1>
-<nav>
-    <ul>
+  <body>
+    <h1>Registration Page</h1>
+    <nav>
+      <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="login.html">Login</a></li>
         <li><a href="registration.html">Registration</a></li>
         <li><a href="postvideo.html">Post Video</a></li>
         <li><a href="viewpost.html">View Post</a></li>
         <li><a href="profile.html">Profile</a></li>
-    </ul>
-</nav>
+      </ul>
+    </nav>
 
-<main>
-    <section>
+    <main>
+      <section>
         <h2>Register Account</h2>
         <form action="" method="POST" id="registration-form">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+          /><br /><br />
 
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required><br><br>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required /><br /><br />
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+          /><br /><br />
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
+          <label for="confirm-password">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            required
+          /><br /><br />
 
-            <label for="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" required><br><br>
+          <label for="age">Are you 13 or older?</label>
+          <input type="checkbox" id="age" name="age" required /><br /><br />
 
-            <label for="age">Are you 13 or older?</label>
-            <input type="checkbox" id="age" name="age" required><br><br>
+          <label for="tac-privacy"
+            >I have read and agree to the
+            <a href="#">Terms, Conditions, and Privacy Rules</a> </label
+          ><br /><br />
 
-            <label for="tac-privacy">I have read and agree to the <a href="#">Terms, Conditions, and Privacy Rules</a> </label><br><br>
-
-            <input type="submit" value="Register">
+          <input type="submit" value="Register" />
         </form>
-    </section>
-</main>
+      </section>
+    </main>
 
-<footer>
-    <p>&copy; Sanna Mohabbat</p>
-</footer>
-
-</body>
+    <footer>
+      <p>&copy; Sanna Mohabbat</p>
+    </footer>
+    <script defer src="registration.js"></script>
+  </body>
 </html>
