@@ -39,7 +39,7 @@ router.get("/profile", authenticateToken, async (req, res) => {
 });
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  console.log(authHeader, "-----------------");
+ 
   const token = authHeader && authHeader.split(" ")[1];
 
   if (token == null) {

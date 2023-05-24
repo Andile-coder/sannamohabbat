@@ -1,37 +1,95 @@
 <html lang="en">
-  <head>
-    <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
+<head>
+  <link rel="stylesheet" type="text/css" href="../public/css/style.css" />
 
-    <meta charset="UTF-8" />
-    <title>My Website</title>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script defer src="api.js"></script>
-  </head>
-  <body>
+  <meta charset="UTF-8" />
+  <title>My Website</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="api.js"></script>
+</head>
+<body>
 
-    <h1>Welcome to My Website!</h1>
+  <h1>Welcome to My Website!</h1>
 
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="./login">Login</a></li>
-        <li><a href="./registration">Registration</a></li>
-        <li><a href="./postvideo">Post Video</a></li>
-        <li><a href="./viewpost">View Post</a></li>
-        <li><a href="./profile">Profile</a></li>
-      </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="./login">Login</a></li>
+      <li><a href="./registration">Registration</a></li>
+      <li><a href="./postvideo">Post Video</a></li>
+      <li><a href="./postview">View Post</a></li>
+      <li><a href="./profile">Profile</a></li>
+    </ul>
+  </nav>
 
-    <main>
-      <h2>Welcome to My Website!</h2>
-      <p id="weeee">This is the front page for my website. Here, you can find
-        all the tools that this application includes.</p>
-      <div id="apiStuff">
-      </div>
-    </main>
+  <main>
+    <h2>Welcome to My Website!</h2>
+    <p id="weeee">This is the front page for my website. Here, you can find
+      all the tools that this application includes.</p>
+    <div id="apiStuff">
+    </div>
+  </main>
 
-    <footer>
-      <p>&copy; Sanna Mohabbat</p>
-    </footer>
-  </body>
+  <footer>
+    <p>&copy; Sanna Mohabbat</p>
+  </footer>
+  <script>
+    const start = async () => {
+      try {
+
+        const posts = document.getElementById('apiStuff')
+
+        const response = await fetch('posts', {
+          method: 'GET',
+          headers: {
+            //    'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+
+          data.posts?.map(post => {
+            const thumbnailBuffer = new Uint8Array(post.thumbnail.data);
+            let binary = '';
+            thumbnailBuffer.forEach((byte) => {
+              binary += String.fromCharCode(byte);
+            });
+            posts.appendChild(createPostStructure(post.title, post.author_id, "", "", btoa(binary)))
+          })
+
+
+
+        } else {
+          console.log(response)
+          throw new Error('Request failed with status: ' + response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+
+      }
+    };
+
+    const createPostStructure = (title, author, createdTime, postedOn, thumbnail) => {
+      // Create the outer <div> element with class "post"
+      const postDiv = document.createElement('div');
+      postDiv.classList.add('post');
+
+      // Create the <video> element for the video
+      const videoElement = document.createElement('img');
+      videoElement.src = `data:image/png;base64, ${thumbnail}`;
+      videoElement.controls = true;
+      postDiv.appendChild(videoElement);
+
+
+      // Append the post div to the document body
+      return postDiv
+
+    }
+
+    start();
+  </script>
+</body>
 </html>

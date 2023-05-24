@@ -15,7 +15,7 @@
       <li><a href="./login">Login</a></li>
       <li><a href="./registration">Registration</a></li>
       <li><a href="./postvideo">Post Video</a></li>
-      <li><a href="./viewpost">View Post</a></li>
+      <li><a href="./postview">View Post</a></li>
       <li><a href="./profile">Profile</a></li>
     </ul>
   </nav>
@@ -47,7 +47,7 @@
               }, body: JSON.stringify({ username, password })
             }); if
             (response.ok) {
-              const data = await response.json();
+            const data = await response.json();
             localStorage.setItem("token", data.token); console.log('Loginsuccessful');
           } else {
             const errorData = await response.json();

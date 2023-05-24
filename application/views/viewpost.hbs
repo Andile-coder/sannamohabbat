@@ -1,42 +1,161 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>View Post</title>
-    <!--<link rel="stylesheet" href="../css/style.css">-->
-    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <title>View Post</title>
+  <!--<link rel="stylesheet" href="../css/style.css">-->
+  <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+</head>
+<body>
 
-    <h1>View Post</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="./login">Login</a></li>
-        <li><a href="./registration">Registration</a></li>
-        <li><a href="./postvideo">Post Video</a></li>
-        <li><a href="./viewpost">View Post</a></li>
-        <li><a href="./profile">Profile</a></li>
-      </ul>
-    </nav>
+  <h1>View Post</h1>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="./login">Login</a></li>
+      <li><a href="./registration">Registration</a></li>
+      <li><a href="./postvideo">Post Video</a></li>
+      <li><a href="./postview">View Post</a></li>
+      <li><a href="./profile">Profile</a></li>
+    </ul>
+  </nav>
 
-    <main>
-      <h1> Post Title</h1>
-      <p>by <span>Post Author</span></p>
-      <!--unknown error-->
-      <p>Posted on <span><br />Post Creation Time</span></p>
-      <video src="path_to_video_file.mp4" controls></video>
-      <div>
-        <h2>Comments</h2>
-        <form>
-          <label for="comment">Please leave a comment:</label><br />
-          <textarea id="comment" name="comment"></textarea><br />
-          <input type="submit" value="Submit" />
+  <main>
 
-        </form>
+    <div id="posts">
+      <div class="post">
+        <h1> Post Title</h1>
+        <p>by <span>Post Author</span></p>
+        <!--unknown error-->
+        <p>Posted on <span><br />Post Creation Time</span></p>
+        <video src="path_to_video_file.mp4" controls></video>
+        <div>
+          <h2>Comments</h2>
+          <form>
+            <label for="comment">Please leave a comment:</label><br />
+            <textarea id="comment" name="comment"></textarea><br />
+            <input type="submit" value="Submit" />
+          </form>
+        </div>
       </div>
-    </main>
-    <footer>
-      <p>&copy; Sanna Mohabbat</p>
-    </footer>
-  </body>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; Sanna Mohabbat</p>
+  </footer>
+  <script>
+    const start = async () => {
+      try {
+
+        const posts = document.getElementById('posts')
+
+        const response = await fetch('posts', {
+          method: 'GET',
+          headers: {
+            //    'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+
+          data.posts?.map(post => {
+            const thumbnailBuffer = new Uint8Array(post.thumbnail.data);
+            let binary = '';
+            thumbnailBuffer.forEach((byte) => {
+              binary += String.fromCharCode(byte);
+            });
+            posts.appendChild(createPostStructure(post.title, post.author_id, "", "", btoa(binary)))
+          })
+
+
+
+        } else {
+          console.log(response)
+          throw new Error('Request failed with status: ' + response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+
+      }
+    };
+
+    const createPostStructure = (title, author, createdTime, postedOn, thumbnail) => {
+      // Create the outer <div> element with class "post"
+      const postDiv = document.createElement('div');
+      postDiv.classList.add('post');
+
+      // Create the <h1> element for post title
+      const postTitle = document.createElement('h1');
+      postTitle.textContent = title;
+      postDiv.appendChild(postTitle);
+
+      // Create the <p> element for post author
+      const postAuthor = document.createElement('p');
+      const authorName = document.createElement('span');
+      authorName.textContent = author;
+      postAuthor.textContent = 'by ';
+      postAuthor.appendChild(authorName);
+      postDiv.appendChild(postAuthor);
+
+      // Create the <p> element for post creation time
+      const postCreationTime = document.createElement('p');
+      const creationTime = document.createElement('span');
+      creationTime.textContent = 'Post Creation Time';
+      postCreationTime.textContent = 'Posted on ';
+      postCreationTime.appendChild(document.createElement('br'));
+      postCreationTime.appendChild(creationTime);
+      postDiv.appendChild(postCreationTime);
+
+      // Create the <video> element for the video
+      const videoElement = document.createElement('img');
+      videoElement.src = `data:image/png;base64, ${thumbnail}`;
+      videoElement.controls = true;
+      postDiv.appendChild(videoElement);
+
+      // Create the <div> for comments section
+      const commentsDiv = document.createElement('div');
+
+      // Create the <h2> element for comments heading
+      const commentsHeading = document.createElement('h2');
+      commentsHeading.textContent = 'Comments';
+      commentsDiv.appendChild(commentsHeading);
+      // Create the <form> element for adding comments
+      const commentForm = document.createElement('form');
+
+      // Create the <label> element for the comment input
+      const commentLabel = document.createElement('label');
+      commentLabel.setAttribute('for', 'comment');
+      commentLabel.textContent = 'Please leave a comment:';
+      commentForm.appendChild(commentLabel);
+      commentForm.appendChild(document.createElement('br'));
+
+      // Create the <textarea> element for the comment input
+      const commentInput = document.createElement('textarea');
+      commentInput.setAttribute('id', 'comment');
+      commentInput.setAttribute('name', 'comment');
+      commentForm.appendChild(commentInput);
+      commentForm.appendChild(document.createElement('br'));
+
+      // Create the <input> element for the submit button
+      const submitButton = document.createElement('input');
+      submitButton.setAttribute('type', 'submit');
+      submitButton.setAttribute('value', 'Submit');
+      commentForm.appendChild(submitButton);
+
+      // Append the comment form to the comments div
+      commentsDiv.appendChild(commentForm);
+
+      // Append the comments div to the post div
+      postDiv.appendChild(commentsDiv);
+
+      // Append the post div to the document body
+      return postDiv
+
+    }
+
+    start();
+  </script>
+</body>
 </html>

@@ -10,10 +10,13 @@ const usersRouter = require("./routes/users");
 const authRouter = require("./routes/authenticate");
 const currentUserRouter = require("./routes/currentUser");
 const bodyParser = require("body-parser");
-
+const postRouter=require('./routes/posts')
 const app = express();
-app.use(bodyParser.json());
 
+
+app.use(bodyParser.json({limit: '1000mb'})); // define the size limit
+app.use(bodyParser.urlencoded({limit: '1000mb', extended: true}));	// define the size limit
+app.use(express.json());
 // Set the Handlebars instance as the view engine
 
 app.engine(
@@ -40,6 +43,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+
+
+
 app.use(favicon(__dirname + "/public/favicon.ico"));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -47,6 +53,7 @@ app.use("/", indexRouter); // route middleware from ./routes/index.js
 app.use("/users", usersRouter); // route middleware from ./routes/users.js
 app.use("/auth", authRouter); // route middleware from ./routes/users.js
 app.use("/currentuser", currentUserRouter);
+app.use("/posts", postRouter);
 /**
  * Catch all route, if we get to here then the
  * resource requested could not be found.

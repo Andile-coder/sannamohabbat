@@ -11,7 +11,7 @@
       <li><a href="./login">Login</a></li>
       <li><a href="./registration">Registration</a></li>
       <li><a href="./postvideo">Post Video</a></li>
-      <li><a href="./viewpost">View Post</a></li>
+      <li><a href="./postview">View Post</a></li>
       <li><a href="./profile">Profile</a></li>
     </ul>
   </nav>
@@ -55,6 +55,15 @@
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
+        const posts = await fetch('/my', {
+          method: 'GET',
+          headers: {
+            //    'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        console.log(posts)
 
         if (response.ok) {
           const data = await response.json();
@@ -69,6 +78,9 @@
       } catch (error) {
         console.error('An error occurred:', error);
       }
+
+
+
     };
 
     start();
