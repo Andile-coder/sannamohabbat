@@ -10,7 +10,6 @@ router.use(express.json());
 
 router.get("/")
 router.get("/blogs", async (req, res) => { 
-  console.log("blogs")
   try {
     // Retrieve the user data based on the authenticated user ID
     const query = "SELECT * FROM blog_posts ";
@@ -47,11 +46,9 @@ router.post("/",authenticateToken ,async (req, res) => {
       // Retrieve the user data based on the authenticated user ID
       const userId=req.user.userId
       const {file,title,content,thumbnail}=req.body
-      console.log("body",req.body)
+
+      // console.log(thumbnail)
       const thumbnailBuffer = fs.readFileSync('routes/flutter.png');
-      console.log("=================")
-      console.log(thumbnailBuffer)
-      console.log("=================")
       
       const query = "INSERT INTO blog_posts (title, content,author_id,thumbnail) VALUES ($1, $2,$3,$4)";
       const values=[title,content,`${userId}`,thumbnail]
@@ -71,7 +68,6 @@ router.delete("/:id",authenticateToken ,async (req, res) => {
         // Retrieve the user data based on the authenticated user ID
         const userId=req.user.userId
         const postId = req.params.id;
-        console.log(userId,postId)
 
       
         const commentsQuery= `DELETE FROM comments WHERE blog_id= ${postId}`

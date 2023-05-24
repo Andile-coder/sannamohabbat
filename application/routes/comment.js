@@ -35,7 +35,6 @@ router.post("/:id",authenticateToken ,async (req, res) => {
     const postId=req.params.id
     const textContent=req.body.comment
 
-   console.log(textContent)
 
   
     const query = `insert into comments (user_id,blog_id,content) values(${userId},${postId},'${textContent}');`;

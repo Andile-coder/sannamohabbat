@@ -60,12 +60,10 @@
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           username.innerText = data.user?.username
           useremail.innerText = data.user?.email
 
         } else {
-          console.log(response)
           throw new Error('Request failed with status: ' + response.status);
         }
       } catch (error) {
@@ -88,7 +86,6 @@
         });
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           var ul = document.getElementById("posts");
           data.posts.map(post => {
             // Create a new list item element
@@ -109,7 +106,6 @@
           })
 
         } else {
-          console.log(response)
           throw new Error('Request failed with status: ' + response.status);
         }
       } catch (error) {
@@ -121,7 +117,7 @@
     };
 
     const deletePost = async (postId) => {
-      console.log(postId)
+
 
       try {
         const response = await fetch(`posts/${postId}`, {
@@ -131,9 +127,9 @@
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        console.log(response)
+
       } catch (erro) {
-        console.log(erro)
+
         console.error(erro)
       }
     }

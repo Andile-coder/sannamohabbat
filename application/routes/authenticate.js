@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
 // create user
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
-  console.log(req.body);
+
 
   try {
     // Check if the username already exists in the database

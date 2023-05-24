@@ -45,7 +45,22 @@
 
     <script>
 
+        function readFileAsBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
 
+                reader.onload = function () {
+                    const buffer = reader.result;
+                    resolve(buffer);
+                };
+
+                reader.onerror = function () {
+                    reject(new Error('Failed to read the file.'));
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        }
         const form = document.getElementById('upload-post-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -55,14 +70,20 @@
             const content = document.getElementById("post-description").value;
 
             const thumbnailBlob = await generateThumbnail(thumbnailFile);
-            // const thumbnailBinary = await readFileAsBinary(thumbnailBlob);
+
+            let bufferDemo;
+
+
+            const thumbnailBinary = await readFileAsBinary(thumbnailFile);
+
+
             const formData = {
-                thumbnail: thumbnailBlob,
+                thumbnail: thumbnailBinary,
                 title,
                 content
             };
-
             try {
+                console.log("file", thumbnailFile)
                 const response = await fetch('/posts', {
                     method: 'POST',
                     headers: {
@@ -71,9 +92,7 @@
                     },
                     body: JSON.stringify(formData),
                 });
-
                 if (response.ok) {
-                    console.log('Thumbnail uploaded successfully');
                 } else {
                     const errorData = await response.json();
                     console.error(errorData.error);
@@ -122,15 +141,31 @@
 
                         // Convert the canvas image to a Blob object
                         canvas.toBlob((blob) => {
-                            // Read the Blob as an ArrayBuffer
-                            const reader = new FileReader();
-                            reader.onloadend = function () {
-                                // Resolve the promise with the thumbnail as a byte array
-                                const thumbnailArrayBuffer = reader.result;
-                                resolve(new Uint8Array(thumbnailArrayBuffer));
-                            };
-                            reader.onerror = reject;
-                            reader.readAsArrayBuffer(blob);
+                            // Create a download link for the thumbnail
+                            const thumbnailURL = URL.createObjectURL(blob);
+
+                            console.log('Thumbnail saved at:', thumbnailURL);
+
+                            // Create a hidden download link element
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = thumbnailURL;
+                            downloadLink.download = 'thumbnail.png';
+                            downloadLink.style.display = 'none';
+
+                            // Append the download link to the document body
+                            document.body.appendChild(downloadLink);
+
+                            // Simulate a click event on the download link
+                            downloadLink.click();
+
+                            // Clean up: remove the download link from the document body
+                            document.body.removeChild(downloadLink);
+
+                            console.log("url", thumbnailURL)
+                            // Resolve the promise with the thumbnail URL
+                            resolve(thumbnailURL);
+
+
                         }, 'image/png');
                     };
                 };
@@ -139,10 +174,11 @@
 
                 // Set the video source
                 const videoURL = URL.createObjectURL(videoFile);
-                console.log(videoURL);
                 video.src = videoURL;
             });
         }
+
+
 
 
     </script>
@@ -171,7 +207,6 @@ video.onerror = reject;
 
 // Set the video source
 const videoURL = URL.createObjectURL(videoFile);
-console.log(videoURL)
 video.src = videoURL;
 });
 }

@@ -71,7 +71,7 @@
             JSON.stringify(formData)
         }); if (response.ok) {
           const data = await
-            response.json(); console.log(data.message);
+            response.json();
         } else {
           const errorData =
             await response.json(); console.error(errorData.error);
