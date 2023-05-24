@@ -55,12 +55,9 @@
             const content = document.getElementById("post-description").value;
 
             const thumbnailBlob = await generateThumbnail(thumbnailFile);
-            const thumbnailBinary = await readFileAsBinary(thumbnailBlob);
-
-
-
+            // const thumbnailBinary = await readFileAsBinary(thumbnailBlob);
             const formData = {
-                thumbnail: Array.from(thumbnailBinary),
+                thumbnail: thumbnailBlob,
                 title,
                 content
             };
@@ -68,7 +65,10 @@
             try {
                 const response = await fetch('/posts', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                     body: JSON.stringify(formData),
                 });
 
@@ -97,34 +97,82 @@
                 reader.readAsArrayBuffer(file);
             });
         }
-        function generateThumbnail(videoFile) {
+        function generateThumbnail(videoFile, captureTime) {
             return new Promise((resolve, reject) => {
                 const video = document.createElement('video');
                 video.preload = 'metadata';
 
                 video.onloadedmetadata = function () {
-                    // Create a canvas element to draw the video frame
-                    const canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
+                    // Set the capture time in seconds
+                    const captureSeconds = Math.floor(5);
 
-                    // Draw the first video frame onto the canvas
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    // Set the video current time to the capture time
+                    video.currentTime = captureSeconds;
 
-                    // Convert the canvas image to a Blob object
-                    canvas.toBlob(resolve, 'image/jpeg');
+                    // Wait for the video to seek to the capture time
+                    video.onseeked = function () {
+                        // Create a canvas element to draw the video frame
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+
+                        // Draw the current video frame onto the canvas
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        // Convert the canvas image to a Blob object
+                        canvas.toBlob((blob) => {
+                            // Read the Blob as an ArrayBuffer
+                            const reader = new FileReader();
+                            reader.onloadend = function () {
+                                // Resolve the promise with the thumbnail as a byte array
+                                const thumbnailArrayBuffer = reader.result;
+                                resolve(new Uint8Array(thumbnailArrayBuffer));
+                            };
+                            reader.onerror = reject;
+                            reader.readAsArrayBuffer(blob);
+                        }, 'image/png');
+                    };
                 };
 
                 video.onerror = reject;
 
                 // Set the video source
                 const videoURL = URL.createObjectURL(videoFile);
+                console.log(videoURL);
                 video.src = videoURL;
             });
         }
 
+
     </script>
 </body>
+{{!--
+function generateThumbnail(videoFile) {
+return new Promise((resolve, reject) => {
+const video = document.createElement('video');
+video.preload = 'metadata';
 
-</html>
+video.onloadedmetadata = function () {
+// Create a canvas element to draw the video frame
+const canvas = document.createElement('canvas');
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+
+// Draw the first video frame onto the canvas
+const ctx = canvas.getContext('2d');
+ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+// Convert the canvas image to a Blob object
+canvas.toBlob(resolve, 'image/jpeg');
+};
+
+video.onerror = reject;
+
+// Set the video source
+const videoURL = URL.createObjectURL(videoFile);
+console.log(videoURL)
+video.src = videoURL;
+});
+}
+</html> --}}

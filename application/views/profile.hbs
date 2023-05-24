@@ -31,10 +31,9 @@
 
     <div>
       <h2>Posts:</h2>
-      <ul>
-        <li><a href="viewpost.html">Post Title 1</a></li>
-        <li><a href="viewpost.html">Post Title 2</a></li>
-        <li><a href="viewpost.html">Post Title 3</a></li>
+      <ul id="posts">
+        {{!-- <li><a href="viewpost.html">Post Title 1</a></li> --}}
+
       </ul>
     </div>
   </main>
@@ -55,15 +54,9 @@
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        const posts = await fetch('/my', {
-          method: 'GET',
-          headers: {
-            //    'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
 
-        console.log(posts)
+
+
 
         if (response.ok) {
           const data = await response.json();
@@ -83,6 +76,69 @@
 
     };
 
+
+    const UserPosts = async () => {
+      try {
+        const response = await fetch('currentuser/blogs', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          var ul = document.getElementById("posts");
+          data.posts.map(post => {
+            // Create a new list item element
+            var li = document.createElement("li");
+            var btn = document.createElement("button");
+            btn.textContent = "Delete"
+            btn.addEventListener('click', () => deletePost(post.id))
+            // Create a new anchor element
+            var a = document.createElement("a");
+            a.href = "#";
+            a.textContent = post.title;
+            // Append the anchor element to the list item element
+            li.appendChild(a);
+
+            // Append the list item element to the unordered list element
+            ul.appendChild(li);
+            ul.appendChild(btn)
+          })
+
+        } else {
+          console.log(response)
+          throw new Error('Request failed with status: ' + response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+
+
+
+    };
+
+    const deletePost = async (postId) => {
+      console.log(postId)
+
+      try {
+        const response = await fetch(`posts/${postId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        console.log(response)
+      } catch (erro) {
+        console.log(erro)
+        console.error(erro)
+      }
+    }
+    UserPosts()
+    deletePost()
     start();
   </script>
 </body>

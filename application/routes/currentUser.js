@@ -5,13 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // Create a new pool instance
-var pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  password: "root",
-  port: 5432, // default PostgreSQL port
-});
+const pool=require('./connector')
 
 router.use(express.json());
 
@@ -32,6 +26,20 @@ router.get("/profile", authenticateToken, async (req, res) => {
 
     // Return the user data
     return res.json({ user });
+  } catch (err) {
+    console.error("Error retrieving user data", err);
+    return "Internal Server Error"
+  }
+});
+router.get("/")
+router.get("/blogs",authenticateToken, async (req, res) => { 
+  try {
+    // Retrieve the user data based on the authenticated user ID
+    const query = "SELECT * FROM blog_posts where author_id=$1";
+    const result = await pool.query(query,[req.user.userId]);
+    const posts = result.rows;
+    // Return the user data
+    return res.json({ posts });
   } catch (err) {
     console.error("Error retrieving user data", err);
     return "Internal Server Error"

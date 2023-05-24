@@ -5,7 +5,8 @@
   <meta charset="UTF-8" />
   <title>My Website</title>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script defer src="api.js"></script>
+  {{!--
+  <script defer src="api.js"></script> --}}
 </head>
 <body>
 
@@ -19,6 +20,7 @@
       <li><a href="./postvideo">Post Video</a></li>
       <li><a href="./postview">View Post</a></li>
       <li><a href="./profile">Profile</a></li>
+      <li><a href="./logout">Logout</a></li>
     </ul>
   </nav>
 
@@ -39,7 +41,7 @@
 
         const posts = document.getElementById('apiStuff')
 
-        const response = await fetch('posts', {
+        const response = await fetch('posts/blogs', {
           method: 'GET',
           headers: {
             //    'Content-Type': 'application/json',
@@ -51,13 +53,15 @@
           const data = await response.json();
           console.log(data);
 
-          data.posts?.map(post => {
+          data.posts?.map(async (post) => {
             const thumbnailBuffer = new Uint8Array(post.thumbnail.data);
             let binary = '';
             thumbnailBuffer.forEach((byte) => {
               binary += String.fromCharCode(byte);
             });
-            posts.appendChild(createPostStructure(post.title, post.author_id, "", "", btoa(binary)))
+            const comments = await getPostComments(post.id)
+            posts.appendChild(createPostStructure(post.title, post.author_id, comments.comment, "", "", btoa(binary)))
+
           })
 
 
@@ -72,21 +76,56 @@
       }
     };
 
-    const createPostStructure = (title, author, createdTime, postedOn, thumbnail) => {
+    const createPostStructure = (title, author, comments, createdTime, postedOn, thumbnail) => {
       // Create the outer <div> element with class "post"
       const postDiv = document.createElement('div');
+      const titleHeader = document.createElement('h1');
+      titleHeader.textContent = title
       postDiv.classList.add('post');
 
       // Create the <video> element for the video
       const videoElement = document.createElement('img');
       videoElement.src = `data:image/png;base64, ${thumbnail}`;
       videoElement.controls = true;
+      postDiv.appendChild(titleHeader)
       postDiv.appendChild(videoElement);
 
-
+      comments.map(comm => {
+        const comment = document.createElement('p');
+        comment.textContent = comm.content;
+        postDiv.appendChild(comment)
+      })
       // Append the post div to the document body
+
       return postDiv
 
+    }
+
+    const getPostComments = async (postId) => {
+      try {
+        const response = await fetch(`comments/${postId}`, {
+          method: 'GET',
+          headers: {
+            //    'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+
+          const data = await response.json();
+          return data
+        } else {
+
+          throw new Error('Request failed with status: ' + response.status);
+
+        }
+
+
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     start();

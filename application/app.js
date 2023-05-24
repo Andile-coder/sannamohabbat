@@ -11,6 +11,7 @@ const authRouter = require("./routes/authenticate");
 const currentUserRouter = require("./routes/currentUser");
 const bodyParser = require("body-parser");
 const postRouter=require('./routes/posts')
+const commentsRouter=require('./routes/comment')
 const app = express();
 
 
@@ -54,6 +55,7 @@ app.use("/users", usersRouter); // route middleware from ./routes/users.js
 app.use("/auth", authRouter); // route middleware from ./routes/users.js
 app.use("/currentuser", currentUserRouter);
 app.use("/posts", postRouter);
+app.use("/comments", commentsRouter);
 /**
  * Catch all route, if we get to here then the
  * resource requested could not be found.

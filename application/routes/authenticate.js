@@ -3,16 +3,9 @@ var express = require("express");
 var router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-/* GET users listing. */
 
-// Create a new pool instance
-var pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  password: "root",
-  port: 5432, // default PostgreSQL port
-});
+const pool=require('./connector')
+
 router.use(express.json());
 
 router.post("/login", async (req, res) => {
@@ -85,7 +78,6 @@ router.post("/logout", (req, res) => {
 });
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  console.log(authHeader, "-----------------");
   const token = authHeader && authHeader.split(" ")[1];
 
   if (token == null) {
